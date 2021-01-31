@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<robot name="rotate_box_bot">
+  <link name="world"/>
+  <link name="link_0">
+    <visual>
+      <geometry>
+        <box size="1 1 0.628546"/>
+      </geometry>
+      <origin xyz="-0.142107 0.058655 -0.552528"/>
+    </visual>
+    <inertial>
+      <mass value="100"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+  <link name="link_1">
+    <visual>
+      <geometry>
+        <cylinder radius="0.223996" length="0.57529"/>
+      </geometry>
+      <origin xyz="-0.069719 0.006867 0.049391"/>
+    </visual>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+  <link name="link_2">
+    <visual>
+      <geometry>
+        <box size="1 1 0.33221"/>
+      </geometry>
+      <origin xyz="0.211826 -0.065522 0.503141"/>
+    </visual>
+    <inertial>
+      <mass value="100"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+  <joint name="world_JOINT_0" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 1"/>
+    <parent link="world"/>
+    <child link="link_0"/>
+  </joint>
+  <joint name="link_0_JOINT_0" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 1"/>
+    <parent link="link_0"/>
+    <child link="link_1"/>
+  </joint>
+  <joint name="link_1_JOINT_0" type="revolute">
+    <axis xyz="0 0 1"/>
+    <origin xyz="0.0 0.0 0.0"/>
+    <parent link="link_1"/>
+    <child link="link_2"/>
+    <!-- 70 degrees to radians for limit -->
+    <limit effort="1000.0" lower="-1.22173" upper="1.22173" velocity="0.1"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <!-- ros2 control specific -->
+  <ros2_control name="rotate_box_bot" type="system">
+    <hardware>
+      <plugin>my_rotate_bot_plugin/MyRotateBotHardware</plugin>
+      <param name="example_param_hw_start_duration_sec">2.0</param>
+      <param name="example_param_hw_stop_duration_sec">3.0</param>
+      <param name="example_param_hw_slowdown">2.0</param>
+    </hardware>
+    <joint name="link_1_JOINT_0">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+    </joint>
+  </ros2_control>
+
+  <!-- gazebo specific -->
+  <!-- <transmission name="link_1_JOINT_0_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="link_1_JOINT_0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_to_top_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission> -->
+
+  <gazebo>
+    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+      <!-- <robot_sim_type>gazebo_ros2_control/GazeboSystem</robot_sim_type>
+      <robotNamespace>/rotate_box_bot</robotNamespace>
+      <parameters>$(find my_rotate_bot)/controllers/gazebo_ros2_control_controllers.yaml</parameters>
+      <control_period>0.01</control_period>
+      <e_stop_topic>/estop</e_stop_topic> -->
+    </plugin>
+  </gazebo>
+</robot>

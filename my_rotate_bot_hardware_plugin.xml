@@ -1,0 +1,9 @@
+<library path="my_rotate_bot">
+  <class name="my_rotate_bot_plugin/MyRotateBotHardware"
+         type="my_rotate_bot_namespace::MyRotateBotHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      copy of RRbot plugin file replacing names
+    </description>
+  </class>
+</library>
